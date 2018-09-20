@@ -11,3 +11,8 @@ creator 图集替换碎图
 ---
 python replaceAtlas.py
 <br>运行之后按照提示输入替换文件目录</br>
+
+
+注意:
+---
+使用前请先备份项目!
