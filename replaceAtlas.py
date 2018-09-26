@@ -11,6 +11,23 @@ str_plist = ""
 png_border = []
 
 '''
+替换文件中的uuid 完全匹配替换
+'''
+
+
+def replace_file_uuid(replaceFile,png_uuid):
+    with open(replaceFile,"r") as f:
+        readlines = f.readlines()
+
+    with open(replaceFile,"w+") as f_w:
+        for line in readlines:
+            for item in png_uuid:
+                if item['old_uuid'] in line:
+                    line = "\"__uuid__\":"+"\""+item['new_uuid']+"\""
+                f_w.write(line)
+    print "Modify File " + replaceFile + " success "
+
+'''
 写入图片的九宫格信息
 TODO  重新设计
 '''
@@ -36,6 +53,7 @@ def write_plist():
     newplist = json.dumps(plist_info, sort_keys=True, indent=4, separators=(',', ': '))
     plist_file_w.write(newplist)
     plist_file_w.close()
+    print "=====九宫格替换完成====="
 
 
 def read_plist():
@@ -50,6 +68,7 @@ def read_plist():
             plist_uuid.append({'name':i,'new_uuid':new_uuid,'atlas_uuid':atlas})
     fo.close()
     return plist_uuid
+
 
 def read_png():
     str_png = raw_input('请输入项目中碎图的目录：png_dir = ')
@@ -115,7 +134,9 @@ def run():
             replace_file_data.write(replace_uuid)
             replace_file_data.close()
 
-        ##开始替换九宫格信息
+            #开始替换其他脚本引用图片
+            replace_file_uuid(replaceFile,png_uuid)
+        #开始替换九宫格信息
         print "=====开始替换图片九宫格信息====="
         write_plist()
         return path
@@ -124,4 +145,3 @@ def run():
 if __name__ == "__main__":
     path = run()
     print '所有文件替换成功，请重新打开creator查看：' + path
-#print '生成的新的文件所在的目录是：'+ os.getcwd()
